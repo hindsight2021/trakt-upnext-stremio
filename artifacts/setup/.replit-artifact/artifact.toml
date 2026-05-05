@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Trakt Up Next — Setup"
+version = "1.0.0"
+id = "artifacts/setup"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21082
+
+[services.development]
+run = "pnpm --filter @workspace/setup run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/setup", "run", "build" ]
+publicDir = "artifacts/setup/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21082"
+BASE_PATH = "/"
