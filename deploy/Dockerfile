@@ -22,6 +22,9 @@ RUN sed -i '/linux-arm64/d' pnpm-workspace.yaml && \
 
 RUN pnpm install --no-frozen-lockfile
 
+# PORT and BASE_PATH are required by vite.config.ts at parse time (dev server config).
+# They are not used in the production build output — any values work here.
+ENV PORT=3000 BASE_PATH=/
 RUN pnpm --filter @workspace/setup run build
 RUN pnpm --filter @workspace/api-server run build
 
