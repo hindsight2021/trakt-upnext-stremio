@@ -29,6 +29,13 @@ app.use(
   }),
 );
 app.use(cors());
+// Chromium-based apps (including Stremio desktop on Windows) enforce the
+// Private Network Access spec — they send Access-Control-Request-Private-Network
+// on preflight requests to local IPs and require this header back.
+app.use((_req, res, next) => {
+  res.setHeader("Access-Control-Allow-Private-Network", "true");
+  next();
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
