@@ -10,7 +10,13 @@ COPY lib/ ./lib/
 COPY artifacts/api-server/ ./artifacts/api-server/
 COPY artifacts/setup/ ./artifacts/setup/
 
-RUN pnpm install --frozen-lockfile
+# Remove x64-only native package exclusions so ARM64 (Pi) builds work
+RUN sed -i '/@rollup\/rollup-linux-arm64/d' pnpm-workspace.yaml && \
+    sed -i '/@rollup\/rollup-android/d' pnpm-workspace.yaml && \
+    sed -i '/@rollup\/rollup-win32/d' pnpm-workspace.yaml && \
+    sed -i '/@rollup\/rollup-darwin/d' pnpm-workspace.yaml
+
+RUN pnpm install --no-frozen-lockfile
 
 RUN pnpm --filter @workspace/setup run build
 RUN pnpm --filter @workspace/api-server run build
