@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: trakt-upnext
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: >-
+      pnpm install --no-frozen-lockfile &&
+      PORT=3000 BASE_PATH=/ pnpm --filter @workspace/setup run build &&
+      pnpm --filter @workspace/api-server run build &&
+      cp -r artifacts/setup/dist/public artifacts/api-server/dist/public
+    startCommand: node --enable-source-maps artifacts/api-server/dist/index.mjs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRAKT_CLIENT_ID
+        sync: false
+      - key: TRAKT_CLIENT_SECRET
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: TRAKT_REDIRECT_URI
+        sync: false
